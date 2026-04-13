@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * JwtService class
  *
- * @Version: 1.0.0 - 11 abr. 2026
+ * @Version: 1.0.1 - 12 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 11 abr. 2026
  */
@@ -42,6 +42,10 @@ public class JwtService {
 
     public String extractEmail(String token) {
         return getClaims(token).getSubject();
+    }
+
+    public Long extractUserId(String token) {
+        return getClaims(token).get("userId", Long.class);
     }
 
     public String extractPlan(String token) {

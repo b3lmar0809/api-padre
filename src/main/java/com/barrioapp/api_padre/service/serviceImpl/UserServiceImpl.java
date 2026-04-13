@@ -9,6 +9,7 @@ import com.barrioapp.api_padre.model.User;
 import com.barrioapp.api_padre.repository.PlanRepository;
 import com.barrioapp.api_padre.repository.UserRepository;
 import com.barrioapp.api_padre.service.JwtService;
+import com.barrioapp.api_padre.service.SessionService;
 import com.barrioapp.api_padre.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 /**
  * UserServiceImpl class
  *
- * @Version: 1.0.0 - 11 abr. 2026
+ * @Version: 1.0.1 - 12 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 11 abr. 2026
  */
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PlanRepository planRepository;
     private final JwtService jwtService;
+    private final SessionService sessionService;
 
     @Override
     public UserResponse register(RegisterRequest request) {
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
         User saved = userRepository.save(user);
 
         String token = jwtService.generateToken(saved);
+        sessionService.saveSession(saved.getId(), token);
 
         return new UserResponse(
                 saved.getId(),
@@ -72,6 +75,7 @@ public class UserServiceImpl implements UserService {
         }
 
         String token = jwtService.generateToken(user);
+        sessionService.saveSession(user.getId(), token);
 
         return new UserResponse(
                 user.getId(),

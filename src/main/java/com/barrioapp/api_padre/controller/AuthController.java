@@ -3,7 +3,11 @@ package com.barrioapp.api_padre.controller;
 import com.barrioapp.api_padre.dto.LoginRequest;
 import com.barrioapp.api_padre.dto.RegisterRequest;
 import com.barrioapp.api_padre.dto.UserResponse;
+import com.barrioapp.api_padre.service.JwtService;
+import com.barrioapp.api_padre.service.SessionService;
 import com.barrioapp.api_padre.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
  * AuthController class
  *
- * @Version: 1.0.0 - 11 abr. 2026
+ * @Version: 1.0.1 - 12 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 11 abr. 2026
  */
@@ -31,6 +36,8 @@ import java.util.Map;
 public class AuthController {
 
     private final UserService userService;
+    private final SessionService sessionService;
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request,
@@ -51,7 +58,17 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request, HttpServletResponse response) {
+        if (request.getCookies() != null) {
+            Arrays.stream(request.getCookies())
+                    .filter(c -> "token".equals(c.getName()))
+                    .map(Cookie::getValue)
+                    .filter(jwtService::isValid)
+                    .map(jwtService::extractUserId)
+                    .findFirst()
+                    .ifPresent(sessionService::deleteSession);
+        }
+
         ResponseCookie cookie = ResponseCookie.from("token", "")
                 .httpOnly(true)
                 .secure(false)
