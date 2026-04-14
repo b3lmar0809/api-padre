@@ -43,6 +43,11 @@ public class GlobalExceptionHandler {
                     .body(Map.of("status", 401, "message", msg));
         }
 
+        if ("Plan no encontrado".equals(msg) || "Usuario no encontrado".equals(msg)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("status", 404, "message", msg));
+        }
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("status", 500, "message", "Internal error server"));
     }
