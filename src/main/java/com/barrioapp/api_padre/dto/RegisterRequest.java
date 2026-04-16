@@ -9,7 +9,7 @@ import lombok.Setter;
 /**
  * RegisterRequest class
  *
- * @Version: 1.0.0 - 11 abr. 2026
+ * @Version: 1.0.1 - 14 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 11 abr. 2026
  */
@@ -17,7 +17,7 @@ import lombok.Setter;
 @Setter
 public class RegisterRequest {
 
-    @NotBlank
+    @NotBlank(message = "name is required")
     private String name;
 
     @NotBlank(message = "last name is required")
@@ -28,7 +28,7 @@ public class RegisterRequest {
     private String email;
 
     @NotBlank(message = "password is required")
-    @Size(min = 8)
+    @Size(min = 8, message = "password must be at least 8 characters")
     private String password;
 
     @NotBlank(message = "company name is required")

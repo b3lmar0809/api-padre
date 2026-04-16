@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
         return new UserResponse(
                 saved.getId(),
                 saved.getName(),
+                saved.getLastName(),
                 saved.getEmail(),
                 saved.getCompanyName(),
                 saved.getPlan().getType().name(),
@@ -80,6 +81,7 @@ public class UserServiceImpl implements UserService {
         return new UserResponse(
                 user.getId(),
                 user.getName(),
+                user.getLastName(),
                 user.getEmail(),
                 user.getCompanyName(),
                 user.getPlan().getType().name(),

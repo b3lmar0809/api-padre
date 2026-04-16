@@ -33,28 +33,28 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleRuntime(RuntimeException ex) {
         String msg = ex.getMessage();
 
-        if ("Email ya registrado".equals(msg)) {
+        if ("Email already registered".equals(msg)) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("status", 409, "message", msg));
         }
 
-        if ("Credenciales incorrectas".equals(msg)) {
+        if ("Incorrect credentials".equals(msg)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("status", 401, "message", msg));
         }
 
-        if ("Plan no encontrado".equals(msg) || "Usuario no encontrado".equals(msg)) {
+        if ("Plan not found".equals(msg) || "User not found".equals(msg)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("status", 404, "message", msg));
         }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("status", 500, "message", "Internal error server"));
+                .body(Map.of("status", 500, "message", "Internal server error"));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("status", 500, "message", "Internal error server"));
+                .body(Map.of("status", 500, "message", "Internal server error"));
     }
 }
