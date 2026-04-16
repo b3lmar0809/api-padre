@@ -8,7 +8,7 @@ import lombok.Setter;
 /**
  * UserRequest class
  *
- * @Version: 1.0.0 - 11 abr. 2026
+ * @Version: 1.0.1 - 14 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 11 abr. 2026
  */
@@ -20,6 +20,7 @@ public class UserResponse {
 
     private Long id;
     private String name;
+    private String lastName;
     private String email;
     private String companyName;
     private String planType;
