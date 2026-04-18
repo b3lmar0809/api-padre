@@ -9,6 +9,7 @@ import com.barrioapp.api_padre.model.User;
 import com.barrioapp.api_padre.repository.PlanRepository;
 import com.barrioapp.api_padre.repository.UserRepository;
 import com.barrioapp.api_padre.service.JwtService;
+import com.barrioapp.api_padre.service.NotificationService;
 import com.barrioapp.api_padre.service.SessionService;
 import com.barrioapp.api_padre.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final PlanRepository planRepository;
     private final JwtService jwtService;
     private final SessionService sessionService;
+    private final NotificationService notificationService;
 
     @Override
     public UserResponse register(RegisterRequest request) {
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
         user.setPlan(planFree);
 
         User saved = userRepository.save(user);
+        notificationService.sendWelcome(saved);
 
         String token = jwtService.generateToken(saved);
         sessionService.saveSession(saved.getId(), token);
