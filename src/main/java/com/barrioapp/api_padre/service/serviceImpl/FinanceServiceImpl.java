@@ -9,18 +9,17 @@ import com.barrioapp.api_padre.model.User;
 import com.barrioapp.api_padre.repository.FinanceRepository;
 import com.barrioapp.api_padre.repository.UserRepository;
 import com.barrioapp.api_padre.service.FinanceService;
+import com.barrioapp.api_padre.util.DateUtils;
+import com.barrioapp.api_padre.util.EnumUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * FinanceServiceImpl class
  *
- * @Version: 1.0.0 - 14 abr. 2026
+ * @Version: 1.0.1 - 19 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 14 abr. 2026
  */
@@ -36,12 +35,7 @@ public class FinanceServiceImpl implements FinanceService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        MovementType type;
-        try {
-            type = MovementType.valueOf(request.getType().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Invalid movement type. Use INCOME or EXPENSE");
-        }
+        MovementType type = EnumUtils.parse(MovementType.class, request.getType(), "Invalid movement type. Use INCOME or EXPENSE");
 
         Finance finance = new Finance();
         finance.setUser(user);
@@ -92,9 +86,7 @@ public class FinanceServiceImpl implements FinanceService {
                 .mapToDouble(Finance::getAmount)
                 .sum();
 
-        String period = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("es", "ES")));
-        period = period.substring(0, 1).toUpperCase() + period.substring(1);
+        String period = DateUtils.currentMonthPeriod();
 
         return new BalanceResponce(totalIncome, totalExpenses, totalIncome - totalExpenses, period);
     }

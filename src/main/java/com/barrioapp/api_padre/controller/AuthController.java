@@ -6,14 +6,13 @@ import com.barrioapp.api_padre.dto.UserResponse;
 import com.barrioapp.api_padre.service.JwtService;
 import com.barrioapp.api_padre.service.SessionService;
 import com.barrioapp.api_padre.service.UserService;
+import com.barrioapp.api_padre.util.CookieUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +25,7 @@ import java.util.Map;
 /**
  * AuthController class
  *
- * @Version: 1.0.1 - 12 abr. 2026
+ * @Version: 1.0.2 - 19 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 11 abr. 2026
  */
@@ -69,25 +68,11 @@ public class AuthController {
                     .ifPresent(sessionService::deleteSession);
         }
 
-        ResponseCookie cookie = ResponseCookie.from("token", "")
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(0)
-                .sameSite("Strict")
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        CookieUtils.clearTokenCookie(response);
         return ResponseEntity.ok(Map.of("message", "Log out"));
     }
 
     private void addTokenCookie(HttpServletResponse response, String token) {
-        ResponseCookie cookie = ResponseCookie.from("token", token)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(86400)
-                .sameSite("Strict")
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        CookieUtils.addTokenCookie(response, token);
     }
 }
