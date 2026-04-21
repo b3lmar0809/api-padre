@@ -9,6 +9,8 @@ import com.barrioapp.api_padre.repository.UserRepository;
 import com.barrioapp.api_padre.service.JwtService;
 import com.barrioapp.api_padre.service.PlanService;
 import com.barrioapp.api_padre.service.SessionService;
+import com.barrioapp.api_padre.util.AuthUtils;
+import com.barrioapp.api_padre.util.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,7 @@ import java.util.List;
 /**
  * PlanServiceImpl class
  *
- * @Version: 1.0.0 - 13 abr. 2026
+ * @Version: 1.0.1 - 19 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 13 abr. 2026
  */
@@ -55,10 +57,7 @@ public class PlanServiceImpl implements PlanService {
         user.setPlan(plan);
         userRepository.save(user);
 
-        String token = jwtService.generateToken(user);
-        sessionService.saveSession(user.getId(), token);
-
-        return new UserResponse(user.getId(), user.getName(), user.getLastName(), user.getEmail(),
-                user.getCompanyName(), plan.getType().name(), token);
+        String token = AuthUtils.generateAndSaveToken(user, jwtService, sessionService);
+        return UserMapper.toResponse(user, token);
     }
 }

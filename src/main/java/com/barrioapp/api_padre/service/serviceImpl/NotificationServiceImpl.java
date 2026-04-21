@@ -9,6 +9,7 @@ import com.barrioapp.api_padre.repository.NotificationRepository;
 import com.barrioapp.api_padre.repository.UserRepository;
 import com.barrioapp.api_padre.service.EmailService;
 import com.barrioapp.api_padre.service.NotificationService;
+import com.barrioapp.api_padre.util.NotificationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * NotificationServiceImpl class
  *
- * @Version: 1.0.0 - 17 abr. 2026
+ * @Version: 1.0.1 - 19 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 17 abr. 2026
  */
@@ -33,12 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendWelcome(User user) {
         String message = "¡Bienvenido a BarrioApp, " + user.getCompanyName() + "! Tu cuenta ha sido creada con el plan Free.";
 
-        Notification notification = new Notification();
-        notification.setUser(user);
-        notification.setMessage(message);
-        notification.setRead(false);
-        notification.setType(NotificationType.WELCOME);
-        notificationRepository.save(notification);
+        notificationRepository.save(NotificationFactory.create(user, message, NotificationType.WELCOME));
 
         String html = "<h2>¡Bienvenido a BarrioApp!</h2>" +
                 "<p>Hola " + user.getName() + ", tu cuenta para <strong>" + user.getCompanyName() + "</strong>" +
@@ -58,12 +54,7 @@ public class NotificationServiceImpl implements NotificationService {
                 " tiene solo " + request.getCurrentStock() +
                 " unidades (mínimo: " + request.getMinStock() + ")";
 
-        Notification notification = new Notification();
-        notification.setUser(user);
-        notification.setMessage(message);
-        notification.setRead(false);
-        notification.setType(NotificationType.LOW_STOCK);
-        notificationRepository.save(notification);
+        notificationRepository.save(NotificationFactory.create(user, message, NotificationType.LOW_STOCK));
 
         String html = "<h2>Alerta de stock bajo</h2>" +
                 "<p>El producto <strong>" + request.getProductName() + "</strong>" +

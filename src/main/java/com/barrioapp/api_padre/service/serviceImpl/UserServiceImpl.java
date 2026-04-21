@@ -12,6 +12,8 @@ import com.barrioapp.api_padre.service.JwtService;
 import com.barrioapp.api_padre.service.NotificationService;
 import com.barrioapp.api_padre.service.SessionService;
 import com.barrioapp.api_padre.service.UserService;
+import com.barrioapp.api_padre.util.AuthUtils;
+import com.barrioapp.api_padre.util.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ import org.springframework.stereotype.Service;
 /**
  * UserServiceImpl class
  *
- * @Version: 1.0.1 - 12 abr. 2026
+ * @Version: 1.0.2 - 19 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 11 abr. 2026
  */
@@ -55,18 +57,8 @@ public class UserServiceImpl implements UserService {
         User saved = userRepository.save(user);
         notificationService.sendWelcome(saved);
 
-        String token = jwtService.generateToken(saved);
-        sessionService.saveSession(saved.getId(), token);
-
-        return new UserResponse(
-                saved.getId(),
-                saved.getName(),
-                saved.getLastName(),
-                saved.getEmail(),
-                saved.getCompanyName(),
-                saved.getPlan().getType().name(),
-                token
-        );
+        String token = AuthUtils.generateAndSaveToken(saved, jwtService, sessionService);
+        return UserMapper.toResponse(saved, token);
     }
 
     @Override
@@ -78,17 +70,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Incorrect credentials");
         }
 
-        String token = jwtService.generateToken(user);
-        sessionService.saveSession(user.getId(), token);
-
-        return new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getCompanyName(),
-                user.getPlan().getType().name(),
-                token
-        );
+        String token = AuthUtils.generateAndSaveToken(user, jwtService, sessionService);
+        return UserMapper.toResponse(user, token);
     }
 }
