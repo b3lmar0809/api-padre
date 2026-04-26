@@ -27,7 +27,7 @@ public class DataInitializer implements CommandLineRunner {
         if (planRepository.count() == 0) {
             planRepository.saveAll(List.of(
                     new Plan(null, PlanType.FREE,   20,    0.0),
-                    new Plan(null, PlanType.BASIC, 100, 4990.0),
+                    new Plan(null, PlanType.BASIC, 100, 350.0),
                     new Plan(null, PlanType.PRO,   999, 9990.0)
             ));
         }

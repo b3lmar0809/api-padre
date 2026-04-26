@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * NotificationServiceImpl class
  *
- * @Version: 1.0.1 - 19 abr. 2026
+ * @Version: 1.0.2 - 22 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 17 abr. 2026
  */
@@ -64,6 +64,19 @@ public class NotificationServiceImpl implements NotificationService {
                 "<br><p>El equipo de BarrioApp</p>";
 
         emailService.sendEmail(user.getEmail(), " Alerta de stock bajo — BarrioApp", html);
+    }
+
+    @Override
+    public void sendPlanUpdated(User user, String planType) {
+        String message = "Tu plan ha sido actualizado a " + planType + " exitosamente.";
+        notificationRepository.save(NotificationFactory.create(user, message, NotificationType.UPDATE_PLAN));
+
+        String html = "<h2>Plan actualizado</h2>" +
+                "<p>Hola " + user.getName() + ", tu plan ha sido actualizado a <strong>" + planType + "</strong> exitosamente.</p>" +
+                "<p>Ya puedes disfrutar de los beneficios de tu nuevo plan.</p>" +
+                "<br><p>El equipo de BarrioApp</p>";
+
+        emailService.sendEmail(user.getEmail(), "Plan actualizado — BarrioApp", html);
     }
 
     @Override
