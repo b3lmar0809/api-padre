@@ -25,17 +25,16 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public void saveSession(Long userId, String token) {
-        String key = PREFIX + userId;
-        redisTemplate.opsForValue().set(key, token, TTL_HORAS, TimeUnit.HOURS);
+        redisTemplate.opsForValue().set(PREFIX + userId, token, TTL_HORAS, TimeUnit.HOURS);
     }
 
     @Override
-    public void deleteSession(Long userId){
+    public void deleteSession(Long userId) {
         redisTemplate.delete(PREFIX + userId);
     }
 
     @Override
-    public boolean sessionExists(Long userId){
+    public boolean sessionExists(Long userId) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(PREFIX + userId));
     }
 }

@@ -43,7 +43,17 @@ public class GlobalExceptionHandler {
                     .body(Map.of("status", 401, "message", msg));
         }
 
-        if ("Plan not found".equals(msg) || "User not found".equals(msg)) {
+        if ("Invalid signature".equals(msg)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("status", 401, "message", msg));
+        }
+
+        if ("Plan price too low for payment".equals(msg)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", 400, "message", "El plan FREE no requiere pago"));
+        }
+
+        if ("Plan not found".equals(msg) || "User not found".equals(msg) || "Transaction not found".equals(msg)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("status", 404, "message", msg));
         }

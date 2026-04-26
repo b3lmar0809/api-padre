@@ -19,6 +19,7 @@ public interface NotificationService {
 
     void sendWelcome(User user);
     void sendLowStockAlert(LowStockRequest request);
+    void sendPlanUpdated(User user, String planType);
     List<NotificationResponse> getNotification(Long userId);
     void markAsRead(Long notificationId);
     Long countUnreadNotifications(Long userId);
