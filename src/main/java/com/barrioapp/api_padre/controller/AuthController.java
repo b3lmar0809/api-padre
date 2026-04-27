@@ -1,9 +1,8 @@
 package com.barrioapp.api_padre.controller;
 
-import com.barrioapp.api_padre.dto.LoginRequest;
-import com.barrioapp.api_padre.dto.RegisterRequest;
-import com.barrioapp.api_padre.dto.UserResponse;
+import com.barrioapp.api_padre.dto.*;
 import com.barrioapp.api_padre.service.JwtService;
+import com.barrioapp.api_padre.service.PasswordResetService;
 import com.barrioapp.api_padre.service.SessionService;
 import com.barrioapp.api_padre.service.UserService;
 import com.barrioapp.api_padre.util.CookieUtils;
@@ -25,7 +24,7 @@ import java.util.Map;
 /**
  * AuthController class
  *
- * @Version: 1.0.2 - 19 abr. 2026
+ * @Version: 1.0.2 - 26 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 11 abr. 2026
  */
@@ -37,10 +36,10 @@ public class AuthController {
     private final UserService userService;
     private final SessionService sessionService;
     private final JwtService jwtService;
+    private final PasswordResetService passwordResetService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request,
-                                                 HttpServletResponse response) {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
         UserResponse result = userService.register(request);
         addTokenCookie(response, result.getToken());
         result.setToken(null);
@@ -48,8 +47,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request,
-                                              HttpServletResponse response) {
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         UserResponse result = userService.login(request);
         addTokenCookie(response, result.getToken());
         result.setToken(null);
@@ -74,5 +72,17 @@ public class AuthController {
 
     private void addTokenCookie(HttpServletResponse response, String token) {
         CookieUtils.addTokenCookie(response, token);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        passwordResetService.requestPasswordReset(request.getEmail());
+        return ResponseEntity.ok(Map.of("message", "If this email is registered, you will receive a reset link shortly."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        passwordResetService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok(Map.of("message", "Password updated successfully."));
     }
 }
