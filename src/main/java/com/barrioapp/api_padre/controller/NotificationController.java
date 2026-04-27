@@ -3,6 +3,7 @@ package com.barrioapp.api_padre.controller;
 import com.barrioapp.api_padre.dto.LowStockRequest;
 import com.barrioapp.api_padre.dto.NotificationResponse;
 import com.barrioapp.api_padre.service.NotificationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getNotification(userId));
     }
 
-    @GetMapping("/{userId}/unread  ")
+    @GetMapping("/{userId}/unread")
     public ResponseEntity<Long> countUnread(@PathVariable Long userId) {
         return ResponseEntity.ok(notificationService.countUnreadNotifications(userId));
     }
@@ -41,7 +42,7 @@ public class NotificationController {
     }
 
     @PostMapping("/low-stock")
-    public ResponseEntity<Void> lowStockAlert(@RequestBody LowStockRequest request) {
+    public ResponseEntity<Void> lowStockAlert(@Valid @RequestBody LowStockRequest request) {
         notificationService.sendLowStockAlert(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

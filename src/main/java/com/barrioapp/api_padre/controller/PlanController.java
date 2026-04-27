@@ -36,9 +36,7 @@ public class PlanController {
 
     @PutMapping("/change")
     public ResponseEntity<UserResponse> changePlan(@RequestBody Map<String, Long> body) {
-        Long userId = body.get("userId");
-        Long planId = body.get("planId");
-        return ResponseEntity.ok(planService.changePlan(userId, planId));
+        return ResponseEntity.ok(planService.changePlan(body.get("userId"), body.get("planId")));
     }
 
     @PostMapping("/subscribe")
