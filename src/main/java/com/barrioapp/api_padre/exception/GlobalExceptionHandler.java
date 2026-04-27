@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * GlobalExceptionHandler class
  *
- * @Version: 1.0.0 - 11 abr. 2026
+ * @Version: 1.0.1 - 26 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 11 abr. 2026
  */
@@ -53,9 +53,24 @@ public class GlobalExceptionHandler {
                     .body(Map.of("status", 400, "message", "El plan FREE no requiere pago"));
         }
 
+        if ("userId and planId are required".equals(msg)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", 400, "message", msg));
+        }
+
         if ("Plan not found".equals(msg) || "User not found".equals(msg) || "Transaction not found".equals(msg)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("status", 404, "message", msg));
+        }
+        // Password reset
+        if ("Invalid token".equals(msg)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", 400, "message", msg));
+        }
+
+        if ("Token already used".equals(msg) || "Token expired".equals(msg)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", 400, "message", msg));
         }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -35,7 +35,7 @@ import java.util.TreeMap;
 /**
  * FlowServiceImpl class
  *
- * @Version: 1.0.0 - Apr 21, 2026
+ * @Version: 1.0.1 - Apr 26, 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - Apr 21, 2026
  */
@@ -110,7 +110,13 @@ public class FlowServiceImpl implements FlowService {
 
         String flowOrder     = params.getOrDefault("flowOrder", "");
         String commerceOrder = params.getOrDefault("commerceOrder", "");
-        int    status        = Integer.parseInt(params.getOrDefault("status", "0"));
+        int status;
+        try {
+            status = Integer.parseInt(params.getOrDefault("status", "0"));
+        } catch (NumberFormatException e) {
+            log.warn("Flow webhook — invalid status value: {}", params.get("status"));
+            status = 0;
+        }
 
         if (transactionRepository.existsByFlowOrder(flowOrder)) {
             log.info("Flow webhook ignored — flowOrder {} already processed", flowOrder);

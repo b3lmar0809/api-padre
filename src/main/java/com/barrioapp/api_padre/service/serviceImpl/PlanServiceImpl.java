@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * PlanServiceImpl class
  *
- * @Version: 1.0.1 - 19 abr. 2026
+ * @Version: 1.0.2 - 26 abr. 2026
  * @Author: Matias Belmar - mati.belmar0625@gmail.com
  * @Since: 1.0.0 - 13 abr. 2026
  */
@@ -48,6 +48,10 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public UserResponse changePlan(Long userId, Long planId) {
+        if (userId == null || planId == null) {
+            throw new RuntimeException("userId and planId are required");
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

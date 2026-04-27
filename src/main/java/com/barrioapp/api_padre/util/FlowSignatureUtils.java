@@ -2,6 +2,7 @@ package com.barrioapp.api_padre.util;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -26,8 +27,8 @@ public class FlowSignatureUtils {
 
         try {
             Mac mac = Mac.getInstance(HMAC_SHA256);
-            mac.init(new SecretKeySpec(secretKey.getBytes(), HMAC_SHA256));
-            byte[] hash = mac.doFinal(data.toString().getBytes());
+            mac.init(new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), HMAC_SHA256));
+            byte[] hash = mac.doFinal(data.toString().getBytes(StandardCharsets.UTF_8));
 
             StringBuilder hex = new StringBuilder();
             for (byte b : hash) {

@@ -18,7 +18,7 @@ public class CookieUtils {
     public static void addTokenCookie(HttpServletResponse response, String token) {
         ResponseCookie cookie = ResponseCookie.from("token", token)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(86400)
                 .sameSite("Strict")
@@ -29,7 +29,7 @@ public class CookieUtils {
     public static void clearTokenCookie(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("token", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Strict")
