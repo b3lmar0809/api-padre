@@ -15,6 +15,7 @@ import java.util.List;
 
 public interface PlanService {
     List<PlanResponse> planList();
-    PlanResponse  getPlan(Long id);
+    PlanResponse getPlan(Long id);
+    PlanResponse getPlanByUserId(Long userId);
     UserResponse changePlan(Long userId, Long PlanId);
 }
