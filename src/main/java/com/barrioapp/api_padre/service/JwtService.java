@@ -5,15 +5,13 @@ import com.barrioapp.api_padre.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
-
 /**
  * JwtService class
  *
@@ -33,23 +31,15 @@ public class JwtService {
                 .claim("email", user.getEmail())
                 .claim("plan", user.getPlan().getType().name())
                 .claim("limitProducts", user.getPlan().getLimitProduct())
-                .setSubject(user.getEmail())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .subject(user.getEmail())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
+                .signWith(getKey())
                 .compact();
-    }
-
-    public String extractEmail(String token) {
-        return getClaims(token).getSubject();
     }
 
     public Long extractUserId(String token) {
         return getClaims(token).get("userId", Long.class);
-    }
-
-    public String extractPlan(String token) {
-        return getClaims(token).get("plan", String.class);
     }
 
     public boolean isValid(String token) {
@@ -61,20 +51,15 @@ public class JwtService {
         }
     }
 
-    public long getRemainingTime(String token) {
-        Date expiration = getClaims(token).getExpiration();
-        return expiration.getTime() - System.currentTimeMillis();
-    }
-
     private Claims getClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getKey())
+        return Jwts.parser()
+                .verifyWith(getKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
-    private Key getKey() {
+    private SecretKey getKey() {
         return Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 }

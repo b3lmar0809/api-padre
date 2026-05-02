@@ -47,6 +47,14 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
+    public PlanResponse getPlanByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Plan plan = user.getPlan();
+        return new PlanResponse(plan.getId(), plan.getType().name(), plan.getLimitProduct(), plan.getPrice());
+    }
+
+    @Override
     public UserResponse changePlan(Long userId, Long planId) {
         if (userId == null || planId == null) {
             throw new RuntimeException("userId and planId are required");
